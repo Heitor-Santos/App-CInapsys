@@ -78,10 +78,11 @@ public class server {
                             response.writeUTF("WELCOME" + "\r\n" + "ONE" + "\r\n" + "WAIT");
                             logPanel.append("Solicitacao enviada a " + address + ":" + port + " - esperar conexao" + "\r\n");
                             clientOneStatus.setText("Em espera");
-                            socket.close();
                             peerWaiting = 1;
                             this.port = port;
                             this.address = address;
+                            new ConnectionHolder(socket).start();
+
                         } else if (peerWaiting == 1) {
                             response.writeUTF("WELCOME" + "\r\n" + "TWO" + "\r\n" + "CONNECT" + "\r\n"
                                     + this.address + "\r\n" +
@@ -177,7 +178,7 @@ public class server {
                 String unholdData = unholdResponse.readUTF();
                 clientOneStatus.setText("Conectado");
                 clientTwoStatus.setText("Conectado");
-                holdingSocket.close();
+                // holdingSocket.close();
                 peerWaiting = -1;
             } catch (SocketException e) {
                 if (peerWaiting == 1) {

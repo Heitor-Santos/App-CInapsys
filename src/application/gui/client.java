@@ -147,8 +147,9 @@ public class client {
                     infoData.setText("Desconectado");
                     isPeerOnline = false;
                     callButton.setEnabled(false);
-                    new PeerRTPSwitcher(false).start();
-
+                    if (isRTPSessionRunning) {
+                        new PeerRTPSwitcher(false).start();
+                    }
 
                     new ServerMessageSender(true).start();
                     break;
@@ -157,6 +158,7 @@ public class client {
                     messagesArea.append("ERRO: " + e + "\r\n");
                     sendButton.setEnabled(false);
                     callButton.setEnabled(false);
+                    e.printStackTrace();
                     break;
                 }
             }
@@ -182,9 +184,6 @@ public class client {
                     DataInputStream response = new DataInputStream(serverSocket.getInputStream());
                     String responseData = response.readUTF();
 
-                    // esse close muda.
-                    serverSocket.close();
-
                     ServerSocket peerWaiterSocket = null;
 
                     String[] responseParts = responseData.split("\\r?\\n");
@@ -198,10 +197,12 @@ public class client {
                         chatName.setText("Cinapsys Cliente " + serverID);
 
                         if (responseParts[2].equals("WAIT")) {
-                            // flush se demorar demais
                             infoData.setText("Esperando par...");
                             peerWaiterSocket = new ServerSocket(peerPort);
                             peerSocket = peerWaiterSocket.accept();
+                            DataOutputStream unhold = new DataOutputStream(serverSocket.getOutputStream());
+                            unhold.writeUTF("UNHOLD");
+
                         } else if (responseParts[2].equals("CONNECT")) {
                             infoData.setText("Conectando a " + responseParts[3] + ":" + responseParts[4]);
                             peerSocket = new Socket(responseParts[3], Integer.parseInt(responseParts[4]));
@@ -220,12 +221,16 @@ public class client {
                         messagesArea.append("INFO: Servidor negou a conexão porque está cheio.\r\n");
                     }
 
+                    serverSocket.close();
+
+
                 } catch (ConnectException e) {
                     infoData.setText("Erro");
                     messagesArea.append("ERRO: Nao foi possivel chegar ao destino.\r\n");
                     sendButton.setEnabled(false);
                     callButton.setEnabled(false);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     infoData.setText("Erro");
                     messagesArea.append("ERRO: " + e + "\r\n");
                     sendButton.setEnabled(false);
@@ -260,6 +265,7 @@ public class client {
 
                     DataOutputStream unhold = new DataOutputStream(serverSocket.getOutputStream());
                     unhold.writeUTF("UNHOLD");
+                    serverSocket.close();
 
                     infoData.setText("Conectado");
                     messagesArea.append("INFO: Par reconectado." + "\r\n");
@@ -282,6 +288,7 @@ public class client {
                     callButton.setEnabled(false);
                 } catch (Exception e) {
                     infoData.setText("Erro");
+                    e.printStackTrace();
                     messagesArea.append("ERRO: " + e + "\r\n");
                     sendButton.setEnabled(false);
                     callButton.setEnabled(false);

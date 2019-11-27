@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="098f6987-c717-4181-9a05-5aaa793c631c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerMessageReceiver.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerMessageReceiver.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPReceiver.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPReceiver.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPSender.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPSender.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPSwitcher.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPSwitcher.class" afterDir="false" />
@@ -74,7 +75,7 @@
       <updated>1574807970232</updated>
       <workItem from="1574807974881" duration="1266000" />
       <workItem from="1574809354716" duration="19835000" />
-      <workItem from="1574831925720" duration="9093000" />
+      <workItem from="1574831925720" duration="12131000" />
     </task>
     <servers />
   </component>
