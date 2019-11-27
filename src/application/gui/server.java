@@ -13,6 +13,7 @@ public class server {
     private ServerSocket serverSocket;
     private Socket socket;
 
+    int peerWaiting;
     int serverPort;
 
     public server(int serverPort) {
@@ -26,6 +27,7 @@ public class server {
         this.serverPort = serverPort;
         serverSocket = null;
         socket = null;
+        peerWaiting = 0;
 
         logPanel.append("Servidor iniciado." + "\r\n");
 
@@ -39,12 +41,10 @@ public class server {
 
     }
     class ServerMaitre extends Thread {
-        int peerWaiting;
         int port;
         String address;
 
         public ServerMaitre () {
-            peerWaiting = 0;
             port = 0;
             address = null;
         }
@@ -64,7 +64,6 @@ public class server {
                     break;
                 }
 
-
                 try {
                     DataInputStream auth = new DataInputStream(socket.getInputStream());
                     String authData = auth.readUTF();
@@ -83,7 +82,7 @@ public class server {
                             peerWaiting = 1;
                             this.port = port;
                             this.address = address;
-                        } else {
+                        } else if (peerWaiting == 1) {
                             response.writeUTF("WELCOME" + "\r\n" + "TWO" + "\r\n" + "CONNECT" + "\r\n"
                                     + this.address + "\r\n" +
                                     this.port);
@@ -91,10 +90,57 @@ public class server {
                             clientOneStatus.setText("Conectado");
                             clientTwoStatus.setText("Conectado");
                             socket.close();
-                            peerWaiting = 0;
+                            peerWaiting = -1;
+                            this.port = 0;
+                            this.address = null;
+                        } else if (peerWaiting == 2) {
+                            response.writeUTF("WELCOME" + "\r\n" + "ONE" + "\r\n" + "CONNECT" + "\r\n"
+                                    + this.address + "\r\n" +
+                                    this.port);
+                            logPanel.append("Solicitacao enviada a " + address + ":" + port + " - conectar a outro par" + "\r\n");
+                            clientOneStatus.setText("Conectado");
+                            clientTwoStatus.setText("Conectado");
+                            socket.close();
+                            peerWaiting = -1;
                             this.port = 0;
                             this.address = null;
                         }
+
+                    } else if (authData.startsWith("CINAPSYS CLIENT RECONN 1")) {
+                        clientTwoStatus.setText("Sem Informação");
+                        int port = Integer.parseInt(authData.substring(25));
+                        String address = ((InetSocketAddress) socket.getRemoteSocketAddress()).getAddress().toString().substring(1);
+                        logPanel.append("Conexao recebida: " + address + ":" + port + "\r\n");
+                        DataOutputStream response = new DataOutputStream(socket.getOutputStream());
+
+                        response.writeUTF("WELCOME" + "\r\n" + "ONE" + "\r\n" + "WAIT");
+                        logPanel.append("Reconexao solicitada por " + address + ":" + port + " - esperar conexao" + "\r\n");
+                        clientOneStatus.setText("Em espera");
+
+                        peerWaiting = 1;
+                        this.port = port;
+                        this.address = address;
+
+                        new ConnectionHolder(socket).start();
+                        socket = null;
+
+                    } else if (authData.startsWith("CINAPSYS CLIENT RECONN 2")) {
+                        clientOneStatus.setText("Sem Informação");
+                        int port = Integer.parseInt(authData.substring(25));
+                        String address = ((InetSocketAddress) socket.getRemoteSocketAddress()).getAddress().toString().substring(1);
+                        logPanel.append("Conexao recebida: " + address + ":" + port + "\r\n");
+                        DataOutputStream response = new DataOutputStream(socket.getOutputStream());
+
+                        response.writeUTF("WELCOME" + "\r\n" + "TWO" + "\r\n" + "WAIT");
+                        logPanel.append("Reconexao solicitada por " + address + ":" + port + " - esperar conexao" + "\r\n");
+                        clientTwoStatus.setText("Em espera");
+
+                        peerWaiting = 2;
+                        this.port = port;
+                        this.address = address;
+
+                        new ConnectionHolder(socket).start();
+                        socket = null;
 
                     } else {
                         logPanel.append("Cliente tentou conectar com dado de autenticacao incorreto." + "\r\n");
@@ -110,54 +156,40 @@ public class server {
         }
 
     }
-/*    class ConnectionCreatorThread extends Thread {
 
-        protected Socket socket;
-        WaitingStatus waitingStatus;
+    class ConnectionHolder extends Thread {
 
-        public ConnectionCreatorThread(Socket clientSocket, WaitingStatus waitingStatus) {
-            this.socket = clientSocket;
-            this.waitingStatus = waitingStatus;
+        Socket holdingSocket;
 
+        public ConnectionHolder(Socket holdingSocket) {
+            this.holdingSocket = holdingSocket;
         }
 
         public void run() {
+
             try {
-                DataInputStream auth = new DataInputStream(socket.getInputStream());
-                String authData = auth.readUTF();
+                DataInputStream unholdResponse = new DataInputStream(holdingSocket.getInputStream());
+                String unholdData = unholdResponse.readUTF();
+                clientOneStatus.setText("Conectado");
+                clientTwoStatus.setText("Conectado");
+                peerWaiting = -1;
+            } catch (SocketException e) {
+                if (peerWaiting == 1) {
+                    peerWaiting = 0;
+                    clientOneStatus.setText("Sem Informação");
 
-                if (authData.startsWith("FIGOCHAT CLIENT CONN")) {
-                    int port = Integer.parseInt(authData.substring(21));
-                    String address = ((InetSocketAddress) socket.getRemoteSocketAddress()).getAddress().toString().substring(1);
-                    System.out.println("Conexao recebida: " + address + ":" + port);
-                    DataOutputStream response = new DataOutputStream(socket.getOutputStream());
+                } else if (peerWaiting == 2) {
+                    peerWaiting = 0;
+                    clientTwoStatus.setText("Sem Informação");
 
-                    if (!waitingStatus.getWaitingStatus()) {
-                        response.writeUTF("WAIT FOR CONNECTION");
-                        System.out.println("Solicitacao enviada a " + address + ":" + port + " - esperar conexao");
-                        socket.close();
-                        waitingStatus.waitForTwo(port, address);
-                    } else {
-                        response.writeUTF("CONNECT" + "\r\n"
-                                + waitingStatus.getAddress() + "\r\n" +
-                                waitingStatus.getPort());
-                        System.out.println("Solicitacao enviada a " + address + ":" + port + " - conectar a outro par");
-                        socket.close();
-                        waitingStatus.stopWaiting();
-                    }
-
-                } else {
-                    System.out.println("Dado de autenticacao incorreto.");
                 }
-
-
-            } catch (IOException e) {
-                System.out.println("Erro de I/O: " + e);
+            } catch (Exception e) {
+                logPanel.append("ERRO: " + e + "\r\n");
             }
+
         }
 
     }
-    */
 
 
 }

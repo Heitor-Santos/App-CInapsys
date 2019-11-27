@@ -28,14 +28,14 @@ public class init {
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Windows
-        /*
+
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
             SwingUtilities.updateComponentTreeUI(janela);
         } catch (Exception e) {
 
         }
-         */
+
 
         ButtonGroup modeSelector = new ButtonGroup();
         modeSelector.add(clientSelector);

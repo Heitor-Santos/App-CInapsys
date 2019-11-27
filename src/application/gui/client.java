@@ -79,7 +79,7 @@ public class client {
             }
         });
 
-        new ServerMessageSender().start();
+        new ServerMessageSender(false).start();
 
     }
 
@@ -102,7 +102,7 @@ public class client {
                 } else {
                     messageQueue.add(message);
                     if (message.startsWith("CINAPSYS MESSAGE: ")) {
-                        messagesArea.append("ESPERANDO PARA ENVIAR: " + message + "\r\n");
+                        messagesArea.append("ESPERANDO PARA ENVIAR: " + message.substring(18) + "\r\n");
                         messageField.setText("");
                     }
                 }
@@ -143,11 +143,14 @@ public class client {
                     }
 
                 } catch (SocketException e) {
-                    messagesArea.append("INFO: Conexao encerrada.\r\n");
-                    // isso aqui vai passar a ser o offline
-                    // ele vai verificar com o servidor pra ver o estado (offline)
-                    sendButton.setEnabled(false);
+                    messagesArea.append("INFO: Par desconectado.\r\n");
+                    infoData.setText("Desconectado");
+                    isPeerOnline = false;
                     callButton.setEnabled(false);
+                    new PeerRTPSwitcher(false).start();
+
+
+                    new ServerMessageSender(true).start();
                     break;
                 } catch (Exception e) {
                     infoData.setText("Erro");
@@ -161,57 +164,122 @@ public class client {
     }
 
     class ServerMessageSender extends Thread {
-        public ServerMessageSender() {}
+        boolean isReconnection;
+
+        public ServerMessageSender(boolean isReconnection) {
+            this.isReconnection = isReconnection;
+        }
 
         public void run() {
-            try {
-                serverSocket = new Socket(address, serverPort);
-                infoData.setText("Conectando a servidor...");
-                DataOutputStream auth = new DataOutputStream(serverSocket.getOutputStream());
-                auth.writeUTF("CINAPSYS CLIENT CONN " + peerPort);
-                infoData.setText("Esperando servidor...");
+            if (!isReconnection) {
+                try {
+                    serverSocket = new Socket(address, serverPort);
+                    infoData.setText("Conectando a servidor...");
+                    DataOutputStream auth = new DataOutputStream(serverSocket.getOutputStream());
+                    auth.writeUTF("CINAPSYS CLIENT CONN " + peerPort);
+                    infoData.setText("Esperando servidor...");
 
-                DataInputStream response = new DataInputStream(serverSocket.getInputStream());
-                String responseData = response.readUTF();
+                    DataInputStream response = new DataInputStream(serverSocket.getInputStream());
+                    String responseData = response.readUTF();
 
-                // isso não vai fechar mais, vai ficar esperando.
-                serverSocket.close();
+                    serverSocket.close();
 
-                ServerSocket peerWaiterSocket = null;
+                    ServerSocket peerWaiterSocket = null;
 
-                String[] responseParts = responseData.split("\\r?\\n");
+                    String[] responseParts = responseData.split("\\r?\\n");
 
-                if (responseParts[1].equals("ONE")) {
-                    serverID = 1;
-                } else if (responseParts[1].equals("TWO")) {
-                    serverID = 2;
+                    if (responseParts[1].equals("ONE")) {
+                        serverID = 1;
+                    } else if (responseParts[1].equals("TWO")) {
+                        serverID = 2;
+                    }
+                    chatName.setText("Cinapsys Cliente " + serverID);
+
+                    if (responseParts[2].equals("WAIT")) {
+                        // flush se demorar demais
+                        infoData.setText("Esperando par...");
+                        peerWaiterSocket = new ServerSocket(peerPort);
+                        peerSocket = peerWaiterSocket.accept();
+                    } else if (responseParts[2].equals("CONNECT")) {
+                        infoData.setText("Conectando a " + responseParts[3] + ":" + responseParts[4]);
+                        peerSocket = new Socket(responseParts[3], Integer.parseInt(responseParts[4]));
+                    }
+
+                    infoData.setText("Conectado");
+                    isPeerOnline = true;
+
+                    sendButton.setEnabled(true);
+                    callButton.setEnabled(true);
+
+                    new PeerMessageReceiver().start();
+
+                } catch (ConnectException e) {
+                    infoData.setText("Erro");
+                    messagesArea.append("ERRO: Nao foi possivel chegar ao destino.\r\n");
+                    sendButton.setEnabled(false);
+                    callButton.setEnabled(false);
+                } catch (Exception e) {
+                    infoData.setText("Erro");
+                    messagesArea.append("ERRO: " + e + "\r\n");
+                    sendButton.setEnabled(false);
+                    callButton.setEnabled(false);
                 }
-                chatName.setText("Cinapsys Cliente " + serverID);
+            } else {
+                try {
+                    serverSocket.close();
+                    peerSocket.close();
 
-                if (responseParts[2].equals("WAIT")) {
-                    // flush se demorar demais
-                    infoData.setText("Esperando par...");
-                    peerWaiterSocket = new ServerSocket(peerPort);
-                    peerSocket = peerWaiterSocket.accept();
-                } else if (responseParts[2].equals("CONNECT")) {
-                    infoData.setText("Conectando a " + responseParts[3] + ":" + responseParts[4]);
-                    peerSocket = new Socket(responseParts[3], Integer.parseInt(responseParts[4]));
+                    serverSocket = new Socket(address, serverPort);
+                    infoData.setText("Conectando a servidor...");
+                    DataOutputStream auth = new DataOutputStream(serverSocket.getOutputStream());
+                    auth.writeUTF("CINAPSYS CLIENT RECONN " + serverID + " " + peerPort);
+                    infoData.setText("Esperando servidor...");
+
+                    DataInputStream response = new DataInputStream(serverSocket.getInputStream());
+                    String responseData = response.readUTF();
+
+                    ServerSocket peerWaiterSocket = null;
+
+                    String[] responseParts = responseData.split("\\r?\\n");
+
+                    chatName.setText("Cinapsys Cliente " + serverID);
+
+                    if (responseParts[2].equals("WAIT")) {
+                        // flush se demorar demais
+                        infoData.setText("Esperando par...");
+                        peerWaiterSocket = new ServerSocket(peerPort);
+                        peerSocket = peerWaiterSocket.accept();
+                    }
+
+                    DataOutputStream unhold = new DataOutputStream(serverSocket.getOutputStream());
+                    unhold.writeUTF("UNHOLD");
+
+                    infoData.setText("Conectado");
+                    messagesArea.append("INFO: Par reconectado." + "\r\n");
+                    isPeerOnline = true;
+
+                    sendButton.setEnabled(true);
+                    callButton.setEnabled(true);
+
+                    new PeerMessageReceiver().start();
+
+                    for (int i = 0; i < messageQueue.size(); i++) {
+                        new PeerMessageSender(messageQueue.elementAt(i)).start();
+                    }
+                    messageQueue.clear();
+
+                } catch (ConnectException e) {
+                    infoData.setText("Erro");
+                    messagesArea.append("ERRO: Nao foi possivel chegar ao destino.\r\n");
+                    sendButton.setEnabled(false);
+                    callButton.setEnabled(false);
+                } catch (Exception e) {
+                    infoData.setText("Erro");
+                    messagesArea.append("ERRO: " + e + "\r\n");
+                    sendButton.setEnabled(false);
+                    callButton.setEnabled(false);
                 }
 
-                infoData.setText("Conectado");
-                isPeerOnline = true;
-
-                sendButton.setEnabled(true);
-                callButton.setEnabled(true);
-
-                new PeerMessageReceiver().start();
-
-            } catch (ConnectException e) {
-                infoData.setText("Erro");
-                messagesArea.append("ERRO: Nao foi possivel chegar ao destino.\r\n");
-            } catch (Exception e) {
-                infoData.setText("Erro");
-                messagesArea.append("ERRO: " + e + "\r\n");
             }
         }
     }
@@ -234,10 +302,28 @@ public class client {
                 rtpSenderThread = null;
                 rtpReceiverThread = null;
                 isRTPSessionRunning = false;
-                infoData.setText("Conectado");
                 callButton.setText("Iniciar chamada");
+                if (isPeerOnline) {
+                    infoData.setText("Conectado");
+                }
             }
         }
     }
+
+    class PeerRTPSender extends Thread {
+        // TODO
+        // Copiar implementação de pacotes do outro projeto
+        public PeerRTPSender () {}
+
+    }
+
+    class PeerRTPReceiver extends Thread {
+        // TODO
+        // Implementar a partir de leitor de RTP
+        public PeerRTPReceiver () {}
+
+    }
+
+
 }
 
