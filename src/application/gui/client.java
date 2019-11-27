@@ -182,36 +182,43 @@ public class client {
                     DataInputStream response = new DataInputStream(serverSocket.getInputStream());
                     String responseData = response.readUTF();
 
+                    // esse close muda.
                     serverSocket.close();
 
                     ServerSocket peerWaiterSocket = null;
 
                     String[] responseParts = responseData.split("\\r?\\n");
 
-                    if (responseParts[1].equals("ONE")) {
-                        serverID = 1;
-                    } else if (responseParts[1].equals("TWO")) {
-                        serverID = 2;
+                    if (!responseParts[1].equals("FULL")) {
+                        if (responseParts[1].equals("ONE")) {
+                            serverID = 1;
+                        } else if (responseParts[1].equals("TWO")) {
+                            serverID = 2;
+                        }
+                        chatName.setText("Cinapsys Cliente " + serverID);
+
+                        if (responseParts[2].equals("WAIT")) {
+                            // flush se demorar demais
+                            infoData.setText("Esperando par...");
+                            peerWaiterSocket = new ServerSocket(peerPort);
+                            peerSocket = peerWaiterSocket.accept();
+                        } else if (responseParts[2].equals("CONNECT")) {
+                            infoData.setText("Conectando a " + responseParts[3] + ":" + responseParts[4]);
+                            peerSocket = new Socket(responseParts[3], Integer.parseInt(responseParts[4]));
+                        }
+
+                        infoData.setText("Conectado");
+                        isPeerOnline = true;
+
+                        sendButton.setEnabled(true);
+                        callButton.setEnabled(true);
+
+                        new PeerMessageReceiver().start();
+
+                    } else {
+                        infoData.setText("Servidor cheio");
+                        messagesArea.append("INFO: Servidor negou a conexão porque está cheio.\r\n");
                     }
-                    chatName.setText("Cinapsys Cliente " + serverID);
-
-                    if (responseParts[2].equals("WAIT")) {
-                        // flush se demorar demais
-                        infoData.setText("Esperando par...");
-                        peerWaiterSocket = new ServerSocket(peerPort);
-                        peerSocket = peerWaiterSocket.accept();
-                    } else if (responseParts[2].equals("CONNECT")) {
-                        infoData.setText("Conectando a " + responseParts[3] + ":" + responseParts[4]);
-                        peerSocket = new Socket(responseParts[3], Integer.parseInt(responseParts[4]));
-                    }
-
-                    infoData.setText("Conectado");
-                    isPeerOnline = true;
-
-                    sendButton.setEnabled(true);
-                    callButton.setEnabled(true);
-
-                    new PeerMessageReceiver().start();
 
                 } catch (ConnectException e) {
                     infoData.setText("Erro");

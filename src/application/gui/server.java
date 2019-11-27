@@ -104,6 +104,11 @@ public class server {
                             peerWaiting = -1;
                             this.port = 0;
                             this.address = null;
+                        } else if (peerWaiting == -1) {
+                            response.writeUTF("SORRY" + "\r\n" + "FULL");
+                            logPanel.append("Cliente tentou conectar com servidor cheio.");
+                            socket.close();
+
                         }
 
                     } else if (authData.startsWith("CINAPSYS CLIENT RECONN 1")) {
@@ -172,6 +177,7 @@ public class server {
                 String unholdData = unholdResponse.readUTF();
                 clientOneStatus.setText("Conectado");
                 clientTwoStatus.setText("Conectado");
+                holdingSocket.close();
                 peerWaiting = -1;
             } catch (SocketException e) {
                 if (peerWaiting == 1) {
