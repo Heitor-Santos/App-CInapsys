@@ -65,17 +65,23 @@
           <text value="Sem Informação"/>
         </properties>
       </component>
-      <component id="7d01" class="javax.swing.JTextArea" binding="logPanel">
+      <scrollpane id="177bd">
         <constraints>
-          <grid row="1" column="0" row-span="1" col-span="3" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="50"/>
-          </grid>
+          <grid row="1" column="0" row-span="1" col-span="3" vsize-policy="7" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties>
-          <editable value="false"/>
-          <lineWrap value="true"/>
-        </properties>
-      </component>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="7d01" class="javax.swing.JTextArea" binding="logPanel">
+            <constraints/>
+            <properties>
+              <editable value="false"/>
+              <font swing-font="Viewport.font"/>
+              <lineWrap value="true"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
     </children>
   </grid>
 </form>

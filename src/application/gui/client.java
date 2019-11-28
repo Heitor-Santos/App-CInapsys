@@ -175,8 +175,8 @@ public class client {
         public void run() {
             if (!isReconnection) {
                 try {
-                    serverSocket = new Socket(address, serverPort);
                     infoData.setText("Conectando a servidor...");
+                    serverSocket = new Socket(address, serverPort);
                     DataOutputStream auth = new DataOutputStream(serverSocket.getOutputStream());
                     auth.writeUTF("CINAPSYS CLIENT CONN " + peerPort);
                     infoData.setText("Esperando servidor...");
@@ -257,7 +257,6 @@ public class client {
                     chatName.setText("Cinapsys Cliente " + serverID);
 
                     if (responseParts[2].equals("WAIT")) {
-                        // flush se demorar demais
                         infoData.setText("Esperando par...");
                         peerWaiterSocket = new ServerSocket(peerPort);
                         peerSocket = peerWaiterSocket.accept();
