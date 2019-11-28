@@ -3,15 +3,22 @@
   <component name="ChangeListManager">
     <list default="true" id="098f6987-c717-4181-9a05-5aaa793c631c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerMessageReceiver.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerMessageReceiver.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerMessageSender.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerMessageSender.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPReceiver.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPReceiver.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPSender.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPSender.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPSwitcher.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPSwitcher.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$ServerMessageSender.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$ServerMessageSender.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/application/gui/client.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/gui/client.form" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/server$ConnectionHolder.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/server$ConnectionHolder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/server$ServerMaitre.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/server$ServerMaitre.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/server.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/server.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/application/gui/client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/gui/client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/application/gui/init.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/gui/init.form" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/application/gui/init.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/gui/init.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/application/gui/server.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/gui/server.form" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/application/gui/server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/gui/server.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -76,8 +83,16 @@
       <workItem from="1574807974881" duration="1266000" />
       <workItem from="1574809354716" duration="19835000" />
       <workItem from="1574831925720" duration="12131000" />
-      <workItem from="1574955845777" duration="1985000" />
+      <workItem from="1574955845777" duration="4617000" />
     </task>
+    <task id="LOCAL-00001" summary="Corrige #1 e #4">
+      <created>1574958053823</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1574958053823</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -95,5 +110,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Corrige #1 e #4" />
+    <option name="LAST_COMMIT_MESSAGE" value="Corrige #1 e #4" />
   </component>
 </project>

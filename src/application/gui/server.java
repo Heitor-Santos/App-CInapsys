@@ -50,15 +50,13 @@ public class server {
         }
 
         public void run() {
-            try {
-                serverSocket = new ServerSocket(serverPort);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             while (true) {
                 try {
                     socket = serverSocket.accept();
+                } catch (BindException e) {
+                    logPanel.append("ERRO: " + e + "\r\n");
+                    logPanel.append("Verifique se você já não existe uma instância de servidor ou cliente aberta na mesma porta." + "\r\n" + "\r\n");
                 } catch (IOException e) {
                     logPanel.append("ERRO: Erro de I/O - " + e + "\r\n");
                     break;
@@ -71,12 +69,12 @@ public class server {
                     if (authData.startsWith("CINAPSYS CLIENT CONN")) {
                         int port = Integer.parseInt(authData.substring(21));
                         String address = ((InetSocketAddress) socket.getRemoteSocketAddress()).getAddress().toString().substring(1);
-                        logPanel.append("Conexao recebida: " + address + ":" + port + "\r\n");
+                        logPanel.append("Conexão recebida: " + address + ":" + port + "\r\n");
                         DataOutputStream response = new DataOutputStream(socket.getOutputStream());
 
                         if (peerWaiting == 0) {
                             response.writeUTF("WELCOME" + "\r\n" + "ONE" + "\r\n" + "WAIT");
-                            logPanel.append("Solicitacao enviada a " + address + ":" + port + " - esperar conexao" + "\r\n");
+                            logPanel.append("Solicitação enviada a " + address + ":" + port + " (1) - esperar conexão" + "\r\n");
                             clientOneStatus.setText("Em espera");
                             peerWaiting = 1;
                             this.port = port;
@@ -87,7 +85,7 @@ public class server {
                             response.writeUTF("WELCOME" + "\r\n" + "TWO" + "\r\n" + "CONNECT" + "\r\n"
                                     + this.address + "\r\n" +
                                     this.port);
-                            logPanel.append("Solicitacao enviada a " + address + ":" + port + " - conectar a outro par" + "\r\n");
+                            logPanel.append("Solicitação enviada a " + address + ":" + port + " (2) - conectar a outro par" + "\r\n");
                             clientOneStatus.setText("Conectado");
                             clientTwoStatus.setText("Conectado");
                             socket.close();
@@ -98,7 +96,7 @@ public class server {
                             response.writeUTF("WELCOME" + "\r\n" + "ONE" + "\r\n" + "CONNECT" + "\r\n"
                                     + this.address + "\r\n" +
                                     this.port);
-                            logPanel.append("Solicitacao enviada a " + address + ":" + port + " - conectar a outro par" + "\r\n");
+                            logPanel.append("Solicitação enviada a " + address + ":" + port + " (1) - conectar a outro par" + "\r\n");
                             clientOneStatus.setText("Conectado");
                             clientTwoStatus.setText("Conectado");
                             socket.close();
@@ -113,14 +111,15 @@ public class server {
                         }
 
                     } else if (authData.startsWith("CINAPSYS CLIENT RECONN 1")) {
-                        clientTwoStatus.setText("Sem Informação");
+                        logPanel.append("Cliente 2 desconectado."  + "\r\n");
+                        clientTwoStatus.setText("Desconectado");
                         int port = Integer.parseInt(authData.substring(25));
                         String address = ((InetSocketAddress) socket.getRemoteSocketAddress()).getAddress().toString().substring(1);
-                        logPanel.append("Conexao recebida: " + address + ":" + port + "\r\n");
+                        logPanel.append("Conexão recebida: " + address + ":" + port + "\r\n");
                         DataOutputStream response = new DataOutputStream(socket.getOutputStream());
 
                         response.writeUTF("WELCOME" + "\r\n" + "ONE" + "\r\n" + "WAIT");
-                        logPanel.append("Reconexao solicitada por " + address + ":" + port + " - esperar conexao" + "\r\n");
+                        logPanel.append("Reconexão solicitada por " + address + ":" + port + " (1) - esperar conexao" + "\r\n");
                         clientOneStatus.setText("Em espera");
 
                         peerWaiting = 1;
@@ -131,14 +130,15 @@ public class server {
                         socket = null;
 
                     } else if (authData.startsWith("CINAPSYS CLIENT RECONN 2")) {
-                        clientOneStatus.setText("Sem Informação");
+                        logPanel.append("Cliente 1 desconectado."  + "\r\n");
+                        clientOneStatus.setText("Desconectado");
                         int port = Integer.parseInt(authData.substring(25));
                         String address = ((InetSocketAddress) socket.getRemoteSocketAddress()).getAddress().toString().substring(1);
-                        logPanel.append("Conexao recebida: " + address + ":" + port + "\r\n");
+                        logPanel.append("Conexão recebida: " + address + ":" + port + "\r\n");
                         DataOutputStream response = new DataOutputStream(socket.getOutputStream());
 
                         response.writeUTF("WELCOME" + "\r\n" + "TWO" + "\r\n" + "WAIT");
-                        logPanel.append("Reconexao solicitada por " + address + ":" + port + " - esperar conexao" + "\r\n");
+                        logPanel.append("Reconexão solicitada por " + address + ":" + port + " (2) - esperar conexão" + "\r\n");
                         clientTwoStatus.setText("Em espera");
 
                         peerWaiting = 2;
@@ -149,7 +149,7 @@ public class server {
                         socket = null;
 
                     } else {
-                        logPanel.append("Cliente tentou conectar com dado de autenticacao incorreto." + "\r\n");
+                        logPanel.append("Cliente tentou conectar com dado de autenticação incorreto." + "\r\n");
                     }
 
 
@@ -178,16 +178,18 @@ public class server {
                 String unholdData = unholdResponse.readUTF();
                 clientOneStatus.setText("Conectado");
                 clientTwoStatus.setText("Conectado");
-                // holdingSocket.close();
+                logPanel.append("Conexão entre clientes realizada." + "\r\n");
                 peerWaiting = -1;
             } catch (SocketException e) {
                 if (peerWaiting == 1) {
                     peerWaiting = 0;
-                    clientOneStatus.setText("Sem Informação");
+                    logPanel.append("Cliente 1 desconectado." + "\r\n");
+                    clientOneStatus.setText("Desconectado");
 
                 } else if (peerWaiting == 2) {
                     peerWaiting = 0;
-                    clientTwoStatus.setText("Sem Informação");
+                    logPanel.append("Cliente 2 desconectado." + "\r\n");
+                    clientTwoStatus.setText("Desconectado");
 
                 }
             } catch (Exception e) {

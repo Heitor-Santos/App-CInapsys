@@ -16,6 +16,7 @@ public class client {
     private JPanel actionPanel;
     private JButton callButton;
     private JLabel infoData;
+    ServerSocket peerWaiterSocket;
     private Socket serverSocket;
     private Socket peerSocket;
     String address;
@@ -79,7 +80,19 @@ public class client {
             }
         });
 
-        new ServerMessageSender(false).start();
+        try {
+            peerWaiterSocket = new ServerSocket(peerPort);
+        } catch (BindException e) {
+            messagesArea.append("AVISO: " + e + "\r\n");
+            messagesArea.append("Provavelmente você está executando duas instâncias de cliente na mesma máquina com a mesma porta. Poderão ocorrer efeitos indesejáveis." + "\r\n" + "\r\n");
+        } catch (IOException e) {
+            infoData.setText("Erro");
+            messagesArea.append("ERRO: " + e + "\r\n");
+            sendButton.setEnabled(false);
+            callButton.setEnabled(false);
+        }
+
+            new ServerMessageSender(false).start();
 
     }
 
@@ -143,7 +156,7 @@ public class client {
                     }
 
                 } catch (SocketException e) {
-                    messagesArea.append("INFO: Par desconectado.\r\n");
+                    messagesArea.append("INFO: Par desconectado. As mensagens seguintes serão enviadas quando ele se conectar novamente.\r\n");
                     infoData.setText("Desconectado");
                     isPeerOnline = false;
                     callButton.setEnabled(false);
@@ -158,7 +171,6 @@ public class client {
                     messagesArea.append("ERRO: " + e + "\r\n");
                     sendButton.setEnabled(false);
                     callButton.setEnabled(false);
-                    e.printStackTrace();
                     break;
                 }
             }
@@ -184,8 +196,6 @@ public class client {
                     DataInputStream response = new DataInputStream(serverSocket.getInputStream());
                     String responseData = response.readUTF();
 
-                    ServerSocket peerWaiterSocket = null;
-
                     String[] responseParts = responseData.split("\\r?\\n");
 
                     if (!responseParts[1].equals("FULL")) {
@@ -198,7 +208,6 @@ public class client {
 
                         if (responseParts[2].equals("WAIT")) {
                             infoData.setText("Esperando par...");
-                            peerWaiterSocket = new ServerSocket(peerPort);
                             peerSocket = peerWaiterSocket.accept();
                             DataOutputStream unhold = new DataOutputStream(serverSocket.getOutputStream());
                             unhold.writeUTF("UNHOLD");
@@ -226,11 +235,10 @@ public class client {
 
                 } catch (ConnectException e) {
                     infoData.setText("Erro");
-                    messagesArea.append("ERRO: Nao foi possivel chegar ao destino.\r\n");
+                    messagesArea.append("ERRO: Não foi possivel chegar ao destino.\r\n");
                     sendButton.setEnabled(false);
                     callButton.setEnabled(false);
                 } catch (Exception e) {
-                    e.printStackTrace();
                     infoData.setText("Erro");
                     messagesArea.append("ERRO: " + e + "\r\n");
                     sendButton.setEnabled(false);
@@ -250,15 +258,12 @@ public class client {
                     DataInputStream response = new DataInputStream(serverSocket.getInputStream());
                     String responseData = response.readUTF();
 
-                    ServerSocket peerWaiterSocket = null;
-
                     String[] responseParts = responseData.split("\\r?\\n");
 
                     chatName.setText("Cinapsys Cliente " + serverID);
 
                     if (responseParts[2].equals("WAIT")) {
                         infoData.setText("Esperando par...");
-                        peerWaiterSocket = new ServerSocket(peerPort);
                         peerSocket = peerWaiterSocket.accept();
                     }
 
@@ -287,7 +292,6 @@ public class client {
                     callButton.setEnabled(false);
                 } catch (Exception e) {
                     infoData.setText("Erro");
-                    e.printStackTrace();
                     messagesArea.append("ERRO: " + e + "\r\n");
                     sendButton.setEnabled(false);
                     callButton.setEnabled(false);
