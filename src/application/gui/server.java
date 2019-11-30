@@ -180,7 +180,7 @@ public class server {
                 clientTwoStatus.setText("Conectado");
                 logPanel.append("Conexão entre clientes realizada." + "\r\n");
                 peerWaiting = -1;
-            } catch (SocketException e) {
+            } catch (SocketException | EOFException e) {
                 if (peerWaiting == 1) {
                     peerWaiting = 0;
                     logPanel.append("Cliente 1 desconectado." + "\r\n");

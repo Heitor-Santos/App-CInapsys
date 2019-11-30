@@ -1,10 +1,12 @@
 package application.gui;
 
 import javax.swing.*;
+import javax.sound.sampled.*;
 import java.awt.event.*;
 import java.io.*;
 import java.net.*;
 import java.util.Vector;
+import common.CompressInputStream;
 
 public class client {
     private JPanel clientPanel;
@@ -19,6 +21,7 @@ public class client {
     ServerSocket peerWaiterSocket;
     private Socket serverSocket;
     private Socket peerSocket;
+    private DatagramSocket rtpSocket;
     String address;
     int serverPort;
     int peerPort;
@@ -26,8 +29,6 @@ public class client {
     boolean isPeerOnline;
     boolean isRTPSessionRunning;
     Vector<String> messageQueue;
-    Thread rtpSenderThread;
-    Thread rtpReceiverThread;
 
     public client(int serverPort, int peerPort, String address) {
         JFrame janela = new JFrame("Cinapsys Cliente");
@@ -43,8 +44,6 @@ public class client {
         this.serverPort = serverPort;
         this.peerPort = peerPort;
         this.messageQueue = new Vector();
-        this.rtpSenderThread = null;
-        this.rtpReceiverThread = null;
         this.serverID = 0;
 
         sendButton.setEnabled(false);
@@ -65,6 +64,7 @@ public class client {
                     new PeerRTPSwitcher(false).start();
                 } else {
                     new PeerMessageSender("CINAPSYS INTERNAL: START RTP SERVER").start();
+                    new PeerRTPSender().start();
                     new PeerRTPSwitcher(true).start();
                 }
             }
@@ -92,7 +92,7 @@ public class client {
             callButton.setEnabled(false);
         }
 
-            new ServerMessageSender(false).start();
+        new ServerMessageSender(false).start();
 
     }
 
@@ -155,7 +155,7 @@ public class client {
                         }
                     }
 
-                } catch (SocketException e) {
+                } catch (SocketException | EOFException e) {
                     messagesArea.append("INFO: Par desconectado. As mensagens seguintes serão enviadas quando ele se conectar novamente.\r\n");
                     infoData.setText("Desconectado");
                     isPeerOnline = false;
@@ -310,14 +310,12 @@ public class client {
 
         public void run() {
             if (switcher) {
-                //rtpSenderThread = new RTPSenderThread().start();
-                //rtpReceiverThread = new RTPReceiverThread().start();
+                // new PeerRTPSender().start();
+                new PeerRTPReceiver().start();
                 infoData.setText("Em chamada");
                 callButton.setText("Finalizar chamada");
                 isRTPSessionRunning = true;
             } else {
-                rtpSenderThread = null;
-                rtpReceiverThread = null;
                 isRTPSessionRunning = false;
                 callButton.setText("Iniciar chamada");
                 if (isPeerOnline) {
@@ -328,9 +326,131 @@ public class client {
     }
 
     class PeerRTPSender extends Thread {
-        // TODO
-        // Copiar implementação de pacotes do outro projeto
-        public PeerRTPSender () {}
+
+        AudioInputStream recordingAudioStream;
+        CompressInputStream rtpAudioStream;
+
+        long timestamp;
+        long seqNumber;
+        byte[] ssrc = {61,74,95,3};
+        int payloadSize;
+        InetAddress IPServer;
+
+        public PeerRTPSender () {
+            payloadSize = 160;
+            timestamp = 0;
+            seqNumber = 0;
+        }
+
+        public void run () {
+            try {
+                // Abre porta UDP
+                rtpSocket = new DatagramSocket(peerPort);
+                IPServer = peerSocket.getInetAddress();
+
+                // Prepara e inicializa o stream de áudio do microfone
+                AudioFormat recordingFormat = new AudioFormat(8000, 8, 1, true, false); // descobrir qual funciona
+                AudioFormat rtpAudioFormat = new AudioFormat(AudioFormat.Encoding.ULAW, 8000f, 8, 1, 1, 8000f, false);
+
+                for (int i = 0; i < AudioSystem.getTargetEncodings(AudioFormat.Encoding.PCM_SIGNED).length; i++)
+                    System.out.println(AudioSystem.getTargetEncodings(AudioFormat.Encoding.PCM_SIGNED)[i]);
+
+                DataLine.Info info = new DataLine.Info(TargetDataLine.class, recordingFormat);
+                if (!AudioSystem.isLineSupported(info)) {
+                    messagesArea.append("ERRO: Não foi possível iniciar a chamada. Microfone não suportado." + "\r\n");
+                    new PeerMessageSender("CINAPSYS INTERNAL: STOP RTP SERVER").start();
+                    new PeerRTPSwitcher(false).start();
+                }
+
+                TargetDataLine line = (TargetDataLine) AudioSystem.getLine(info);
+                line.open(recordingFormat);
+                line.start();
+                recordingAudioStream = new AudioInputStream(line);
+                // rtpAudioStream = AudioSystem.getAudioInputStream(rtpAudioFormat, recordingAudioStream);
+                rtpAudioStream = new CompressInputStream(recordingAudioStream);
+
+                // Envia pacotes a cada 20 milissegundos
+                while (isRTPSessionRunning) {
+                    sendRTPPacket();
+                    Thread.sleep(20);
+                }
+
+                // Finaliza o stream de áudio do microfone
+                line.stop();
+                line.close();
+                rtpSocket.close();
+
+            } catch (Exception e) {
+                infoData.setText("Erro");
+                messagesArea.append("ERRO: Interrupção durante chamada - " + e + "\r\n");
+                sendButton.setEnabled(false);
+                callButton.setEnabled(false);
+            }
+        }
+
+        public void sendRTPPacket() {
+
+            // Cria um novo pacote RTP
+            byte[] rtpPacket = new byte[12 + payloadSize];
+
+            rtpPacket[0] = (byte) 0x80; // Versão 2, CC 0
+            rtpPacket[1] = (byte) 0; // Marker 0, Payload Type 0 (uLaw)
+
+            seqNumber = ++seqNumber & 0xFFFF; // Incrementa o número de sequência e limita em 16 bits
+
+            // Adiciona o número de sequência no pacote
+            rtpPacket[2] = (byte) ((seqNumber & 0xFF00) >> 8);
+            rtpPacket[3] = (byte) ((seqNumber & 0x00FF));
+
+            // Incrementa o timestamp pelo tamanho do payload
+            timestamp = (timestamp + payloadSize) & 0xFFFFFFFF; // Incrementa o timestamp e limita em 32 bits
+
+            // Adiciona o timestamp no pacote
+            rtpPacket[4] = (byte) ((timestamp & 0xFF000000) >> 24);
+            rtpPacket[5] = (byte) ((timestamp & 0x00FF0000) >> 16);
+            rtpPacket[6] = (byte) ((timestamp & 0x0000FF00) >> 8);
+            rtpPacket[7] = (byte) ((timestamp & 0x000000FF));
+
+            // Adiciona o SSRC no pacote
+            rtpPacket[8] = ssrc[0];
+            rtpPacket[9] = ssrc[1];
+            rtpPacket[10] = ssrc[2];
+            rtpPacket[11] = ssrc[3];
+
+            try {
+                // carrega um novo pedaço do stream de áudio
+                int n = 0;
+                n = rtpAudioStream.read(rtpPacket, 12, payloadSize);
+                // adiciona zero no final, caso o stream esteja incompleto
+                if (n > 0) {
+                    if (n < payloadSize) {
+                        for (; n < payloadSize; n++) {
+                            rtpPacket[n + 12] = (byte) 0xff;
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                infoData.setText("Erro");
+                messagesArea.append("ERRO: Interrupção durante chamada - " + e + "\r\n");
+                sendButton.setEnabled(false);
+                callButton.setEnabled(false);
+            }
+
+
+            // Cria um pacote UDP com o rtpPacket
+            DatagramPacket sendPacket = new DatagramPacket(rtpPacket, rtpPacket.length, IPServer, peerPort);
+
+            try {
+                // Envia o pacote
+                rtpSocket.send(sendPacket);
+            } catch (Exception e) {
+                infoData.setText("Erro");
+                messagesArea.append("ERRO: Interrupção durante chamada - " + e + "\r\n");
+                sendButton.setEnabled(false);
+                callButton.setEnabled(false);
+            }
+        }
 
     }
 
@@ -339,7 +459,12 @@ public class client {
         // Implementar a partir de leitor de RTP
         public PeerRTPReceiver () {}
 
+        public void run () {
+
+        }
+
     }
+
 
 
 }
