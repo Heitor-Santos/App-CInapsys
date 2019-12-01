@@ -6,7 +6,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.*;
 import java.util.Vector;
-import common.CompressInputStream;
+import common.*;
 
 public class client {
     private JPanel clientPanel;
@@ -64,7 +64,6 @@ public class client {
                     new PeerRTPSwitcher(false).start();
                 } else {
                     new PeerMessageSender("CINAPSYS INTERNAL: START RTP SERVER").start();
-                    new PeerRTPSender().start();
                     new PeerRTPSwitcher(true).start();
                 }
             }
@@ -310,17 +309,24 @@ public class client {
 
         public void run() {
             if (switcher) {
-                // new PeerRTPSender().start();
-                new PeerRTPReceiver().start();
-                infoData.setText("Em chamada");
-                callButton.setText("Finalizar chamada");
-                isRTPSessionRunning = true;
+                try {
+                    rtpSocket = new DatagramSocket(peerPort);
+                    new PeerRTPSender().start();
+                    new PeerRTPReceiver().start();
+                    infoData.setText("Em chamada");
+                    callButton.setText("Finalizar chamada");
+                    isRTPSessionRunning = true;
+                } catch (SocketException e) {
+                    infoData.setText("Erro");
+                    messagesArea.append("ERRO: Interrupção durante inicialização da chamada - " + e + "\r\n");
+                }
             } else {
                 isRTPSessionRunning = false;
                 callButton.setText("Iniciar chamada");
                 if (isPeerOnline) {
                     infoData.setText("Conectado");
                 }
+                rtpSocket.close();
             }
         }
     }
@@ -345,15 +351,10 @@ public class client {
         public void run () {
             try {
                 // Abre porta UDP
-                rtpSocket = new DatagramSocket(peerPort);
                 IPServer = peerSocket.getInetAddress();
 
                 // Prepara e inicializa o stream de áudio do microfone
-                AudioFormat recordingFormat = new AudioFormat(8000, 8, 1, true, false); // descobrir qual funciona
-                AudioFormat rtpAudioFormat = new AudioFormat(AudioFormat.Encoding.ULAW, 8000f, 8, 1, 1, 8000f, false);
-
-                for (int i = 0; i < AudioSystem.getTargetEncodings(AudioFormat.Encoding.PCM_SIGNED).length; i++)
-                    System.out.println(AudioSystem.getTargetEncodings(AudioFormat.Encoding.PCM_SIGNED)[i]);
+                AudioFormat recordingFormat = new AudioFormat(8000, 8, 1, true, false);
 
                 DataLine.Info info = new DataLine.Info(TargetDataLine.class, recordingFormat);
                 if (!AudioSystem.isLineSupported(info)) {
@@ -366,7 +367,6 @@ public class client {
                 line.open(recordingFormat);
                 line.start();
                 recordingAudioStream = new AudioInputStream(line);
-                // rtpAudioStream = AudioSystem.getAudioInputStream(rtpAudioFormat, recordingAudioStream);
                 rtpAudioStream = new CompressInputStream(recordingAudioStream);
 
                 // Envia pacotes a cada 20 milissegundos
@@ -378,7 +378,6 @@ public class client {
                 // Finaliza o stream de áudio do microfone
                 line.stop();
                 line.close();
-                rtpSocket.close();
 
             } catch (Exception e) {
                 infoData.setText("Erro");
@@ -445,10 +444,12 @@ public class client {
                 // Envia o pacote
                 rtpSocket.send(sendPacket);
             } catch (Exception e) {
-                infoData.setText("Erro");
-                messagesArea.append("ERRO: Interrupção durante chamada - " + e + "\r\n");
-                sendButton.setEnabled(false);
-                callButton.setEnabled(false);
+                if (isRTPSessionRunning) {
+                    infoData.setText("Erro");
+                    messagesArea.append("ERRO: Interrupção durante chamada - " + e + "\r\n");
+                    sendButton.setEnabled(false);
+                    callButton.setEnabled(false);
+                }
             }
         }
 
@@ -457,9 +458,48 @@ public class client {
     class PeerRTPReceiver extends Thread {
         // TODO
         // Implementar a partir de leitor de RTP
+        SourceDataLine speakers;
+
         public PeerRTPReceiver () {}
 
         public void run () {
+            try {
+                System.out.println("Iniciou recebimento rtp.");
+
+                AudioFormat playbackFormat = new AudioFormat(8000, 16, 1, true, false);
+
+                DataLine.Info info = new DataLine.Info(TargetDataLine.class, playbackFormat);
+
+                PipedInputStream rtpInputStream = new PipedInputStream();
+                PipedOutputStream rtpOutputStream = new PipedOutputStream(rtpInputStream);
+
+                DecompressInputStream decompressInputStream = new DecompressInputStream(rtpInputStream);
+
+                DataLine.Info dataLineInfo = new DataLine.Info(SourceDataLine.class, playbackFormat);
+                speakers = (SourceDataLine) AudioSystem.getLine(dataLineInfo);
+                speakers.open(playbackFormat);
+                speakers.start();
+
+                while (isRTPSessionRunning) {
+                    byte[] rtpPacket = new byte[172];
+                    DatagramPacket receivePacket = new DatagramPacket(rtpPacket, rtpPacket.length);
+                    rtpSocket.receive(receivePacket);
+
+                    if (rtpPacket[0] == (byte) 0x80 && rtpPacket[1] == (byte) 0) {
+                        System.out.println("Chegou pacote RTP!");
+                        rtpOutputStream.write(rtpPacket, 12, 160);
+                        byte[] decompressedAudio = new byte[512];
+                        int decompressedAudioLength = decompressInputStream.read(decompressedAudio);
+                        speakers.write(decompressedAudio, 0, decompressedAudioLength);
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            speakers.stop();
+            speakers.close();
 
         }
 

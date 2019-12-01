@@ -74,9 +74,9 @@ public class DecompressInputStream extends FilterInputStream {
         };
 
         for (int i = 0; i < len; i++) {
-            value  = table[inb[i]&0x00FF];
-            b[off++] = (byte) ((value>>8) &0x00FF); // little-endian
-            b[off++] = (byte) (value&0x00FF);
+            value  = table[inb[i] & 0x00FF];
+            b[off++] = (byte) ((value >> 8) & 0x00FF); // little-endian
+            b[off++] = (byte) (value & 0x00FF);
         }
         return len << 1;
     }
