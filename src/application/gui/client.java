@@ -234,7 +234,7 @@ public class client {
 
                 } catch (ConnectException e) {
                     infoData.setText("Erro");
-                    messagesArea.append("ERRO: Não foi possivel chegar ao destino.\r\n");
+                    messagesArea.append("ERRO: Não foi possivel chegar ao servidor.\r\n");
                     sendButton.setEnabled(false);
                     callButton.setEnabled(false);
                 } catch (Exception e) {
@@ -286,7 +286,7 @@ public class client {
 
                 } catch (ConnectException e) {
                     infoData.setText("Erro");
-                    messagesArea.append("ERRO: Nao foi possivel chegar ao destino.\r\n");
+                    messagesArea.append("ERRO: Nao foi possivel chegar ao servidor.\r\n");
                     sendButton.setEnabled(false);
                     callButton.setEnabled(false);
                 } catch (Exception e) {
@@ -355,6 +355,9 @@ public class client {
 
                 // Prepara e inicializa o stream de áudio do microfone
                 AudioFormat recordingFormat = new AudioFormat(8000, 8, 1, true, false);
+
+                for (int i = 0; i < AudioSystem.getTargetEncodings(AudioFormat.Encoding.PCM_SIGNED).length; i++)
+                    System.out.println(AudioSystem.getTargetEncodings(AudioFormat.Encoding.PCM_SIGNED)[i]);
 
                 DataLine.Info info = new DataLine.Info(TargetDataLine.class, recordingFormat);
                 if (!AudioSystem.isLineSupported(info)) {
@@ -484,6 +487,7 @@ public class client {
                     byte[] rtpPacket = new byte[172];
                     DatagramPacket receivePacket = new DatagramPacket(rtpPacket, rtpPacket.length);
                     rtpSocket.receive(receivePacket);
+
 
                     if (rtpPacket[0] == (byte) 0x80 && rtpPacket[1] == (byte) 0) {
                         System.out.println("Chegou pacote RTP!");
