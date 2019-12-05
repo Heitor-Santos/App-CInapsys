@@ -22,7 +22,8 @@ public class init {
         janela.pack();
         janela.setSize(720,480);
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        ImageIcon icon = new ImageIcon("src/resources/init_icon.png");
+        janela.setIconImage(icon.getImage());
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

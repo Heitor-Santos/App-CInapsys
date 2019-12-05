@@ -37,6 +37,8 @@ public class client {
         janela.pack();
         janela.setSize(480,720);
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ImageIcon icon = new ImageIcon("src/resources/client_icon.png");
+        janela.setIconImage(icon.getImage());
 
         this.isPeerOnline = false;
         this.isRTPSessionRunning = false;
@@ -344,8 +346,8 @@ public class client {
 
         public PeerRTPSender () {
             // gera números randômicos para header
-            timestamp = (int) (Math.random() * ((2147483647 - 0) + 1)) + 0; // 32 bits
-            seqNumber = (int) (Math.random() * ((32767 - 0) + 1)) + 0;  // 16 bits
+            timestamp = (int) (Math.random() * ((2147483646) + 1)); // 32 bits
+            seqNumber = (int) (Math.random() * ((32767) + 1));  // 16 bits
         }
 
         public void run () {
