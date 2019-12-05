@@ -37,7 +37,8 @@ public class client {
         janela.pack();
         janela.setSize(480,720);
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ImageIcon icon = new ImageIcon("src/resources/client_icon.png");
+        URL iconURL = getClass().getResource("/resources/client_icon.png");
+        ImageIcon icon = new ImageIcon(iconURL);
         janela.setIconImage(icon.getImage());
 
         this.isPeerOnline = false;

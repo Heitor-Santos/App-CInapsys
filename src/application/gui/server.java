@@ -23,7 +23,8 @@ public class server {
         janela.pack();
         janela.setSize(480, 720);
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ImageIcon icon = new ImageIcon("src/resources/server_icon.png");
+        URL iconURL = getClass().getResource("/resources/server_icon.png");
+        ImageIcon icon = new ImageIcon(iconURL);
         janela.setIconImage(icon.getImage());
 
         this.serverPort = serverPort;

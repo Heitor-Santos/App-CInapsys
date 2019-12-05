@@ -1,31 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="Cinapsys:jar" />
+    </artifacts-to-build>
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="098f6987-c717-4181-9a05-5aaa793c631c" name="Default Changelist" comment="Implementa #12">
-      <change afterPath="$PROJECT_DIR$/src/resources/cinapsys_logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/resources/client_icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/resources/init_icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/resources/server_icon.png" afterDir="false" />
+    <list default="true" id="098f6987-c717-4181-9a05-5aaa793c631c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/Cinapsys_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/cinapsys.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerMessageReceiver.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerMessageReceiver.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerMessageSender.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerMessageSender.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPReceiver.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPReceiver.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPSender.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPSender.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPSwitcher.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPSwitcher.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$ServerMessageSender.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$ServerMessageSender.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/init$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/init$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/init.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/init.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/server$ConnectionHolder.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/server$ConnectionHolder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/server$ServerMaitre.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/server$ServerMaitre.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/server.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/server.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/application/gui/cinapsys.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/application/gui/client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/gui/client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/application/gui/init.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/gui/init.form" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/application/gui/init.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/gui/init.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/application/gui/server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/gui/server.java" afterDir="false" />
     </list>
@@ -57,7 +44,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../FigoChat" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="project.structure.last.edited" value="Problems" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
@@ -114,7 +101,7 @@
       <workItem from="1575328256558" duration="2483000" />
       <workItem from="1575492122498" duration="1413000" />
       <workItem from="1575493566889" duration="2712000" />
-      <workItem from="1575567737496" duration="9568000" />
+      <workItem from="1575567737496" duration="14044000" />
     </task>
     <task id="LOCAL-00001" summary="Corrige #1 e #4">
       <created>1574958053823</created>
@@ -172,7 +159,14 @@
       <option name="project" value="LOCAL" />
       <updated>1575571822359</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Implementa #12">
+      <created>1575579171564</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1575579171564</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -208,10 +202,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="414" y="177" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1575006608292" />
-    <state x="689" y="309" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1575005793145">
+    <state x="689" y="309" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1575581523478">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="689" y="309" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1575005793145" />
+    <state x="689" y="309" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1575581523478" />
     <state x="689" y="312" key="#com.intellij.ide.util.TreeFileChooserDialog" timestamp="1575578577330">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -232,22 +226,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="277" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1575395015018" />
-    <state width="938" height="282" key="GridCell.Tab.0.bottom" timestamp="1575579135476">
+    <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1575586730888">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="938" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1575579135476" />
-    <state width="938" height="282" key="GridCell.Tab.0.center" timestamp="1575579135476">
+    <state width="1877" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1575586730888" />
+    <state width="1877" height="282" key="GridCell.Tab.0.center" timestamp="1575586730888">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="938" height="282" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1575579135476" />
-    <state width="938" height="282" key="GridCell.Tab.0.left" timestamp="1575579135476">
+    <state width="1877" height="282" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1575586730888" />
+    <state width="1877" height="282" key="GridCell.Tab.0.left" timestamp="1575586730888">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="938" height="282" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1575579135476" />
-    <state width="938" height="282" key="GridCell.Tab.0.right" timestamp="1575579135476">
+    <state width="1877" height="282" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1575586730888" />
+    <state width="1877" height="282" key="GridCell.Tab.0.right" timestamp="1575586730888">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="938" height="282" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1575579135476" />
+    <state width="1877" height="282" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1575586730888" />
     <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1575056143748">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -264,6 +258,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="348" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1575056143748" />
+    <state x="440" y="97" key="SettingsEditor" timestamp="1575581551678">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="440" y="97" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1575581551678" />
     <state x="552" y="255" key="Vcs.Push.Dialog.v2" timestamp="1575571873419">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

@@ -2,6 +2,7 @@ package application.gui;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.net.URL;
 
 public class init {
     private JRadioButton clientSelector;
@@ -22,7 +23,8 @@ public class init {
         janela.pack();
         janela.setSize(720,480);
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ImageIcon icon = new ImageIcon("src/resources/init_icon.png");
+        URL iconURL = getClass().getResource("/resources/init_icon.png");
+        ImageIcon icon = new ImageIcon(iconURL);
         janela.setIconImage(icon.getImage());
 
         try {
