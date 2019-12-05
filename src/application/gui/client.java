@@ -6,7 +6,6 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.*;
 import java.util.Vector;
-import common.*;
 
 public class client {
     private JPanel clientPanel;
@@ -26,6 +25,7 @@ public class client {
     int serverPort;
     int peerPort;
     int serverID;
+    int payloadSize;
     boolean isPeerOnline;
     boolean isRTPSessionRunning;
     Vector<String> messageQueue;
@@ -44,6 +44,7 @@ public class client {
         this.serverPort = serverPort;
         this.peerPort = peerPort;
         this.messageQueue = new Vector();
+        payloadSize = 882;
         this.serverID = 0;
 
         sendButton.setEnabled(false);
@@ -338,11 +339,10 @@ public class client {
         long timestamp;
         long seqNumber;
         byte[] ssrc = {61,74,95,3};
-        int payloadSize;
+
         InetAddress IPServer;
 
         public PeerRTPSender () {
-            payloadSize = 882;
             timestamp = 0;
             seqNumber = 0;
         }
@@ -355,17 +355,14 @@ public class client {
                 // Prepara e inicializa o stream de áudio do microfone
                 AudioFormat recordingFormat = new AudioFormat(44100, 8, 1, true, false);
 
-                for (int i = 0; i < AudioSystem.getTargetEncodings(AudioFormat.Encoding.PCM_SIGNED).length; i++)
-                    System.out.println(AudioSystem.getTargetEncodings(AudioFormat.Encoding.PCM_SIGNED)[i]);
-
-                DataLine.Info info = new DataLine.Info(TargetDataLine.class, recordingFormat);
-                if (!AudioSystem.isLineSupported(info)) {
+                DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, recordingFormat);
+                if (!AudioSystem.isLineSupported(dataLineInfo)) {
                     messagesArea.append("ERRO: Não foi possível iniciar a chamada. Microfone não suportado." + "\r\n");
                     new PeerMessageSender("CINAPSYS INTERNAL: STOP RTP SERVER").start();
                     new PeerRTPSwitcher(false).start();
                 }
 
-                TargetDataLine line = (TargetDataLine) AudioSystem.getLine(info);
+                TargetDataLine line = (TargetDataLine) AudioSystem.getLine(dataLineInfo);
                 line.open(recordingFormat);
                 line.start();
                 recordingAudioStream = new AudioInputStream(line);
@@ -421,14 +418,6 @@ public class client {
                 // carrega um novo pedaço do stream de áudio
                 int n = 0;
                 n = recordingAudioStream.read(rtpPacket, 12, payloadSize);
-                // adiciona zero no final, caso o stream esteja incompleto
-                //if (n > 0) {
-                //    if (n < payloadSize) {
-                //        for (; n < payloadSize; n++) {
-                //            rtpPacket[n + 12] = (byte) 0xff;
-                //        }
-                //    }
-                //}
 
             } catch (Exception e) {
                 infoData.setText("Erro");
@@ -457,24 +446,13 @@ public class client {
     }
 
     class PeerRTPReceiver extends Thread {
-        // TODO
-        // Implementar a partir de leitor de RTP
         SourceDataLine speakers;
 
         public PeerRTPReceiver () {}
 
         public void run () {
             try {
-                System.out.println("Iniciou recebimento rtp.");
-
                 AudioFormat playbackFormat = new AudioFormat(44100, 8, 1, true, false);
-
-                DataLine.Info info = new DataLine.Info(TargetDataLine.class, playbackFormat);
-
-                PipedInputStream rtpInputStream = new PipedInputStream();
-                PipedOutputStream rtpOutputStream = new PipedOutputStream(rtpInputStream);
-
-                DecompressInputStream decompressInputStream = new DecompressInputStream(rtpInputStream);
 
                 DataLine.Info dataLineInfo = new DataLine.Info(SourceDataLine.class, playbackFormat);
                 speakers = (SourceDataLine) AudioSystem.getLine(dataLineInfo);
@@ -482,22 +460,21 @@ public class client {
                 speakers.start();
 
                 while (isRTPSessionRunning) {
-                    byte[] rtpPacket = new byte[894];
+                    byte[] rtpPacket = new byte[payloadSize + 12];
                     DatagramPacket receivePacket = new DatagramPacket(rtpPacket, rtpPacket.length);
                     rtpSocket.receive(receivePacket);
 
-
                     if (rtpPacket[0] == (byte) 0x80 && rtpPacket[1] == (byte) 11) {
-                        System.out.println("Chegou pacote RTP!");
-                        //rtpOutputStream.write(rtpPacket, 12, 160);
-                        //byte[] decompressedAudio = new byte[];
-                        // int decompressedAudioLength = decompressInputStream.read(decompressedAudio);
-                        speakers.write(rtpPacket, 12, 882);
+                        speakers.write(rtpPacket, 12, payloadSize);
                     }
                 }
 
+            } catch (SocketException | EOFException e) {
             } catch (Exception e) {
-                e.printStackTrace();
+                infoData.setText("Erro");
+                messagesArea.append("ERRO: Interrupção durante chamada - " + e + "\r\n");
+                sendButton.setEnabled(false);
+                callButton.setEnabled(false);
             }
 
             speakers.stop();
