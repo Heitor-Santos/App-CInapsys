@@ -3,13 +3,14 @@
   <component name="ChangeListManager">
     <list default="true" id="098f6987-c717-4181-9a05-5aaa793c631c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerMessageSender.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerMessageSender.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPReceiver.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPReceiver.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerMessageReceiver.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerMessageReceiver.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPSender.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPSender.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$ServerMessageSender.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$ServerMessageSender.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPSwitcher.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client$PeerRTPSwitcher.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Cinapsys/application/gui/client.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/application/gui/client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/gui/client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common/CompressInputStream.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common/DecompressInputStream.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +92,7 @@
       <workItem from="1575328256558" duration="2483000" />
       <workItem from="1575492122498" duration="1413000" />
       <workItem from="1575493566889" duration="2712000" />
-      <workItem from="1575567737496" duration="3237000" />
+      <workItem from="1575567737496" duration="3868000" />
     </task>
     <task id="LOCAL-00001" summary="Corrige #1 e #4">
       <created>1574958053823</created>
@@ -135,7 +136,14 @@
       <option name="project" value="LOCAL" />
       <updated>1575570124951</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Limpeza no código">
+      <created>1575571033598</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1575571033598</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -161,7 +169,8 @@
     <MESSAGE value="Implementação de #16, #18 persiste" />
     <MESSAGE value="Pequenas alterações" />
     <MESSAGE value="Corrige #18 (AAAAAAA)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Corrige #18 (AAAAAAA)" />
+    <MESSAGE value="Limpeza no código" />
+    <option name="LAST_COMMIT_MESSAGE" value="Limpeza no código" />
   </component>
   <component name="WindowStateProjectService">
     <state x="414" y="177" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1575006608292">
@@ -176,10 +185,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="640" y="250" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1575492795071" />
-    <state x="598" y="117" key="CommitChangelistDialog2" timestamp="1575570121774">
+    <state x="598" y="117" key="CommitChangelistDialog2" timestamp="1575571031917">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="598" y="117" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1575570121774" />
+    <state x="598" y="117" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1575571031917" />
     <state x="92" y="92" width="1736" height="856" key="DiffContextDialog" timestamp="1575493422264">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -188,22 +197,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="277" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1575395015018" />
-    <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1575570993518">
+    <state width="938" height="282" key="GridCell.Tab.0.bottom" timestamp="1575571713131">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1575570993518" />
-    <state width="1877" height="282" key="GridCell.Tab.0.center" timestamp="1575570993517">
+    <state width="938" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1575571713131" />
+    <state width="938" height="282" key="GridCell.Tab.0.center" timestamp="1575571713131">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1575570993517" />
-    <state width="1877" height="282" key="GridCell.Tab.0.left" timestamp="1575570993517">
+    <state width="938" height="282" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1575571713131" />
+    <state width="938" height="282" key="GridCell.Tab.0.left" timestamp="1575571713131">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1575570993517" />
-    <state width="1877" height="282" key="GridCell.Tab.0.right" timestamp="1575570993517">
+    <state width="938" height="282" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1575571713131" />
+    <state width="938" height="282" key="GridCell.Tab.0.right" timestamp="1575571713131">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1575570993517" />
+    <state width="938" height="282" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1575571713131" />
     <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1575056143748">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -220,17 +229,17 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="348" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1575056143748" />
-    <state x="552" y="255" key="Vcs.Push.Dialog.v2" timestamp="1575570138366">
+    <state x="552" y="255" key="Vcs.Push.Dialog.v2" timestamp="1575571048608">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="255" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1575570138366" />
+    <state x="552" y="255" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1575571048608" />
     <state x="668" y="347" key="com.intellij.ide.util.TipDialog" timestamp="1575567737405">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="668" y="347" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1575567737405" />
-    <state x="616" y="240" key="run.anything.popup" timestamp="1575125426529">
+    <state x="616" y="240" key="run.anything.popup" timestamp="1575571448303">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="616" y="240" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1575125426529" />
+    <state x="616" y="240" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1575571448303" />
   </component>
 </project>

@@ -343,8 +343,9 @@ public class client {
         InetAddress IPServer;
 
         public PeerRTPSender () {
-            timestamp = 0;
-            seqNumber = 0;
+            // gera números randômicos para header
+            timestamp = (int) (Math.random() * ((2147483647 - 0) + 1)) + 0; // 32 bits
+            seqNumber = (int) (Math.random() * ((32767 - 0) + 1)) + 0;  // 16 bits
         }
 
         public void run () {
