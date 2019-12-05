@@ -334,7 +334,6 @@ public class client {
     class PeerRTPSender extends Thread {
 
         AudioInputStream recordingAudioStream;
-        CompressInputStream rtpAudioStream;
 
         long timestamp;
         long seqNumber;
@@ -343,7 +342,7 @@ public class client {
         InetAddress IPServer;
 
         public PeerRTPSender () {
-            payloadSize = 160;
+            payloadSize = 882;
             timestamp = 0;
             seqNumber = 0;
         }
@@ -354,7 +353,7 @@ public class client {
                 IPServer = peerSocket.getInetAddress();
 
                 // Prepara e inicializa o stream de áudio do microfone
-                AudioFormat recordingFormat = new AudioFormat(8000, 8, 1, true, false);
+                AudioFormat recordingFormat = new AudioFormat(44100, 8, 1, true, false);
 
                 for (int i = 0; i < AudioSystem.getTargetEncodings(AudioFormat.Encoding.PCM_SIGNED).length; i++)
                     System.out.println(AudioSystem.getTargetEncodings(AudioFormat.Encoding.PCM_SIGNED)[i]);
@@ -370,7 +369,6 @@ public class client {
                 line.open(recordingFormat);
                 line.start();
                 recordingAudioStream = new AudioInputStream(line);
-                rtpAudioStream = new CompressInputStream(recordingAudioStream);
 
                 // Envia pacotes a cada 20 milissegundos
                 while (isRTPSessionRunning) {
@@ -396,7 +394,7 @@ public class client {
             byte[] rtpPacket = new byte[12 + payloadSize];
 
             rtpPacket[0] = (byte) 0x80; // Versão 2, CC 0
-            rtpPacket[1] = (byte) 0; // Marker 0, Payload Type 0 (uLaw)
+            rtpPacket[1] = (byte) 11; // Marker 0, Payload Type 11 (uLaw)
 
             seqNumber = ++seqNumber & 0xFFFF; // Incrementa o número de sequência e limita em 16 bits
 
@@ -422,15 +420,15 @@ public class client {
             try {
                 // carrega um novo pedaço do stream de áudio
                 int n = 0;
-                n = rtpAudioStream.read(rtpPacket, 12, payloadSize);
+                n = recordingAudioStream.read(rtpPacket, 12, payloadSize);
                 // adiciona zero no final, caso o stream esteja incompleto
-                if (n > 0) {
-                    if (n < payloadSize) {
-                        for (; n < payloadSize; n++) {
-                            rtpPacket[n + 12] = (byte) 0xff;
-                        }
-                    }
-                }
+                //if (n > 0) {
+                //    if (n < payloadSize) {
+                //        for (; n < payloadSize; n++) {
+                //            rtpPacket[n + 12] = (byte) 0xff;
+                //        }
+                //    }
+                //}
 
             } catch (Exception e) {
                 infoData.setText("Erro");
@@ -469,7 +467,7 @@ public class client {
             try {
                 System.out.println("Iniciou recebimento rtp.");
 
-                AudioFormat playbackFormat = new AudioFormat(8000, 16, 1, true, false);
+                AudioFormat playbackFormat = new AudioFormat(44100, 8, 1, true, false);
 
                 DataLine.Info info = new DataLine.Info(TargetDataLine.class, playbackFormat);
 
@@ -484,17 +482,17 @@ public class client {
                 speakers.start();
 
                 while (isRTPSessionRunning) {
-                    byte[] rtpPacket = new byte[172];
+                    byte[] rtpPacket = new byte[894];
                     DatagramPacket receivePacket = new DatagramPacket(rtpPacket, rtpPacket.length);
                     rtpSocket.receive(receivePacket);
 
 
-                    if (rtpPacket[0] == (byte) 0x80 && rtpPacket[1] == (byte) 0) {
+                    if (rtpPacket[0] == (byte) 0x80 && rtpPacket[1] == (byte) 11) {
                         System.out.println("Chegou pacote RTP!");
-                        rtpOutputStream.write(rtpPacket, 12, 160);
-                        byte[] decompressedAudio = new byte[512];
-                        int decompressedAudioLength = decompressInputStream.read(decompressedAudio);
-                        speakers.write(decompressedAudio, 0, decompressedAudioLength);
+                        //rtpOutputStream.write(rtpPacket, 12, 160);
+                        //byte[] decompressedAudio = new byte[];
+                        // int decompressedAudioLength = decompressInputStream.read(decompressedAudio);
+                        speakers.write(rtpPacket, 12, 882);
                     }
                 }
 
