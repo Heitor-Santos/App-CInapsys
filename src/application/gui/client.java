@@ -48,7 +48,7 @@ public class client {
         this.serverPort = serverPort;
         this.peerPort = peerPort;
         this.messageQueue = new Vector();
-        payloadSize = 882;
+        payloadSize = 1764;
         this.serverID = 0;
 
         sendButton.setEnabled(false);
