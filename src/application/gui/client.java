@@ -29,9 +29,10 @@ public class client {
     boolean isPeerOnline;
     boolean isRTPSessionRunning;
     Vector<String> messageQueue;
+    JFrame janela;
 
     public client(int serverPort, int peerPort, String address) {
-        JFrame janela = new JFrame("Cinapsys Cliente");
+        janela = new JFrame("Cinapsys Cliente");
         janela.setContentPane(clientPanel);
         janela.setVisible(true);
         janela.pack();
@@ -208,6 +209,9 @@ public class client {
                             serverID = 2;
                         }
                         chatName.setText("Cinapsys Cliente " + serverID);
+                        URL iconURL = getClass().getResource("/resources/client_icon_" + serverID + ".png");
+                        ImageIcon icon = new ImageIcon(iconURL);
+                        janela.setIconImage(icon.getImage());
 
                         if (responseParts[2].equals("WAIT")) {
                             infoData.setText("Esperando par...");
@@ -395,7 +399,7 @@ public class client {
             byte[] rtpPacket = new byte[12 + payloadSize];
 
             rtpPacket[0] = (byte) 0x80; // Versão 2, CC 0
-            rtpPacket[1] = (byte) 11; // Marker 0, Payload Type 11 (uLaw)
+            rtpPacket[1] = (byte) 11; // Marker 0, Payload Type 11 (Linear PCM; 1 channel)
 
             seqNumber = ++seqNumber & 0xFFFF; // Incrementa o número de sequência e limita em 16 bits
 
@@ -420,8 +424,7 @@ public class client {
 
             try {
                 // carrega um novo pedaço do stream de áudio
-                int n = 0;
-                n = recordingAudioStream.read(rtpPacket, 12, payloadSize);
+                recordingAudioStream.read(rtpPacket, 12, payloadSize);
 
             } catch (Exception e) {
                 infoData.setText("Erro");

@@ -53,6 +53,7 @@
         </constraints>
         <properties>
           <font size="18"/>
+          <icon value="resources/server_disconnected.png"/>
           <text value="Desconectado"/>
         </properties>
       </component>
@@ -62,6 +63,7 @@
         </constraints>
         <properties>
           <font size="18"/>
+          <icon value="resources/server_disconnected.png"/>
           <text value="Desconectado"/>
         </properties>
       </component>

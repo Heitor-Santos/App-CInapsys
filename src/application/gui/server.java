@@ -10,8 +10,13 @@ public class server {
     private JTextArea logPanel;
     private JLabel clientOneStatus;
     private JLabel clientTwoStatus;
+    private JLabel clientTwoIcon;
     private ServerSocket serverSocket;
     private Socket socket;
+    URL disconnectedIconURL = getClass().getResource("/resources/server_disconnected.png");
+    URL connectedIconURL = getClass().getResource("/resources/server_connected.png");
+    ImageIcon disconnectedIcon = new ImageIcon(disconnectedIconURL);
+    ImageIcon connectedIcon = new ImageIcon(connectedIconURL);
 
     int peerWaiting;
     int serverPort;
@@ -79,6 +84,7 @@ public class server {
                             response.writeUTF("WELCOME" + "\r\n" + "ONE" + "\r\n" + "WAIT");
                             logPanel.append("Solicitação enviada a " + address + ":" + port + " (1) - esperar conexão" + "\r\n");
                             clientOneStatus.setText("Em espera");
+                            clientOneStatus.setIcon(connectedIcon);
                             peerWaiting = 1;
                             this.port = port;
                             this.address = address;
@@ -90,7 +96,9 @@ public class server {
                                     this.port);
                             logPanel.append("Solicitação enviada a " + address + ":" + port + " (2) - conectar a outro par" + "\r\n");
                             clientOneStatus.setText("Conectado");
+                            clientOneStatus.setIcon(connectedIcon);
                             clientTwoStatus.setText("Conectado");
+                            clientTwoStatus.setIcon(connectedIcon);
                             socket.close();
                             peerWaiting = -1;
                             this.port = 0;
@@ -101,7 +109,9 @@ public class server {
                                     this.port);
                             logPanel.append("Solicitação enviada a " + address + ":" + port + " (1) - conectar a outro par" + "\r\n");
                             clientOneStatus.setText("Conectado");
+                            clientOneStatus.setIcon(connectedIcon);
                             clientTwoStatus.setText("Conectado");
+                            clientTwoStatus.setIcon(connectedIcon);
                             socket.close();
                             peerWaiting = -1;
                             this.port = 0;
@@ -116,6 +126,7 @@ public class server {
                     } else if (authData.startsWith("CINAPSYS CLIENT RECONN 1")) {
                         logPanel.append("Cliente 2 desconectado."  + "\r\n");
                         clientTwoStatus.setText("Desconectado");
+                        clientTwoStatus.setIcon(disconnectedIcon);
                         int port = Integer.parseInt(authData.substring(25));
                         String address = ((InetSocketAddress) socket.getRemoteSocketAddress()).getAddress().toString().substring(1);
                         logPanel.append("Conexão recebida: " + address + ":" + port + "\r\n");
@@ -124,6 +135,7 @@ public class server {
                         response.writeUTF("WELCOME" + "\r\n" + "ONE" + "\r\n" + "WAIT");
                         logPanel.append("Reconexão solicitada por " + address + ":" + port + " (1) - esperar conexao" + "\r\n");
                         clientOneStatus.setText("Em espera");
+                        clientOneStatus.setIcon(connectedIcon);
 
                         peerWaiting = 1;
                         this.port = port;
@@ -135,6 +147,7 @@ public class server {
                     } else if (authData.startsWith("CINAPSYS CLIENT RECONN 2")) {
                         logPanel.append("Cliente 1 desconectado."  + "\r\n");
                         clientOneStatus.setText("Desconectado");
+                        clientOneStatus.setIcon(disconnectedIcon);
                         int port = Integer.parseInt(authData.substring(25));
                         String address = ((InetSocketAddress) socket.getRemoteSocketAddress()).getAddress().toString().substring(1);
                         logPanel.append("Conexão recebida: " + address + ":" + port + "\r\n");
@@ -143,6 +156,7 @@ public class server {
                         response.writeUTF("WELCOME" + "\r\n" + "TWO" + "\r\n" + "WAIT");
                         logPanel.append("Reconexão solicitada por " + address + ":" + port + " (2) - esperar conexão" + "\r\n");
                         clientTwoStatus.setText("Em espera");
+                        clientTwoStatus.setIcon(connectedIcon);
 
                         peerWaiting = 2;
                         this.port = port;
@@ -180,7 +194,9 @@ public class server {
                 DataInputStream unholdResponse = new DataInputStream(holdingSocket.getInputStream());
                 String unholdData = unholdResponse.readUTF();
                 clientOneStatus.setText("Conectado");
+                clientOneStatus.setIcon(connectedIcon);
                 clientTwoStatus.setText("Conectado");
+                clientTwoStatus.setIcon(connectedIcon);
                 logPanel.append("Conexão entre clientes realizada." + "\r\n");
                 peerWaiting = -1;
             } catch (SocketException | EOFException e) {
@@ -188,11 +204,13 @@ public class server {
                     peerWaiting = 0;
                     logPanel.append("Cliente 1 desconectado." + "\r\n");
                     clientOneStatus.setText("Desconectado");
+                    clientOneStatus.setIcon(disconnectedIcon);
 
                 } else if (peerWaiting == 2) {
                     peerWaiting = 0;
                     logPanel.append("Cliente 2 desconectado." + "\r\n");
                     clientTwoStatus.setText("Desconectado");
+                    clientTwoStatus.setIcon(disconnectedIcon);
 
                 }
             } catch (Exception e) {
